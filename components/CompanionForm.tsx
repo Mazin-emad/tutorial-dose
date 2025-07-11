@@ -22,6 +22,8 @@ import {
 } from "@/components/ui/select";
 import { subjects } from "@/constants";
 import { Textarea } from "./ui/textarea";
+import { createCompanion } from "@/lib/actions/comanions.actions";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   name: z.string().min(1, { message: "Companion name is required" }),
@@ -33,6 +35,7 @@ const formSchema = z.object({
 });
 
 const CompanionForm = () => {
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -45,8 +48,15 @@ const CompanionForm = () => {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      const companion = await createCompanion(values);
+      console.log(companion);
+      router.push(`/companions/${companion.id}`);
+    } catch (error) {
+      console.log(error);
+      router.push("/");
+    }
   };
 
   return (
@@ -214,8 +224,14 @@ const CompanionForm = () => {
           )}
         />
 
-        <Button type="submit" className="w-full mb-4 cursor-pointer">
-          Create your Companion
+        <Button
+          type="submit"
+          className="w-full mb-4 cursor-pointer"
+          disabled={form.formState.isSubmitting}
+        >
+          {form.formState.isSubmitting
+            ? "Creating..."
+            : "Create your Companion"}
         </Button>
       </form>
     </Form>
