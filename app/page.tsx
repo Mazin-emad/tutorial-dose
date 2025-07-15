@@ -1,46 +1,43 @@
 import CompanionCard from "@/components/CompanionCard";
 import CompanionList from "@/components/CompanionList";
 import Cta from "@/components/Cta";
-import { recentSessions } from "@/constants";
-import React from "react";
 
-const Page = () => {
+import {
+  getCompanions,
+  getSessionHistory,
+} from "@/lib/actions/companions.actions";
+import { getSubjectColor } from "@/lib/utils";
+import { toast } from "sonner";
+
+const Home = async () => {
+  let companions;
+  let recentSessionsData;
+  try {
+    companions = await getCompanions({ limit: 3 });
+    recentSessionsData = await getSessionHistory();
+  } catch (error) {
+    toast.error("error: " + error);
+  }
+
   return (
-    <main>
+    <main className="pb-8">
       <h1 className="text-2xl">Popular Companions</h1>
 
       <section className="home-section">
-        <CompanionCard
-          id="123"
-          name="Neura the Brainy Explorer"
-          color="#BDE7FF"
-          topic="Neural Networks"
-          subject="Science"
-          duration={40}
-        />
-        <CompanionCard
-          id="aawa"
-          name="Neura the Brainy Explorer"
-          color="#E5D0FF"
-          topic="Neural Networks"
-          subject="Science"
-          duration={40}
-        />
-        <CompanionCard
-          id="aaa"
-          name="Neura the Brainy Explorer"
-          color="#FFDA6A"
-          topic="Neural Networks"
-          subject="Science"
-          duration={40}
-        />
+        {companions?.map((companion) => (
+          <CompanionCard
+            key={companion.id}
+            {...companion}
+            color={getSubjectColor(companion.subject)}
+          />
+        ))}
       </section>
 
       <section className="home-section">
         <CompanionList
           title="recent sessions"
           classNames="w-2/3 max-lg:w-full"
-          companions={recentSessions}
+          companions={recentSessionsData?.map((session) => session.companions)}
         />
         <Cta />
       </section>
@@ -48,4 +45,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default Home;

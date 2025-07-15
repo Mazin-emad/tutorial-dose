@@ -46,7 +46,7 @@ const CompanionList = ({
                       }}
                     >
                       <Image
-                        src={`/icons/${subject.toLowerCase()}.svg`}
+                        src={`/icons/${subject?.toLowerCase()}.svg`}
                         alt={subject}
                         width={35}
                         height={36}
@@ -71,7 +71,7 @@ const CompanionList = ({
                   style={{ backgroundColor: getSubjectColor(subject) }}
                 >
                   <Image
-                    src={`/icons/${subject.toLowerCase()}.svg`}
+                    src={`/icons/${subject?.toLowerCase()}.svg`}
                     alt={subject}
                     width={18}
                     height={18}
