@@ -37,7 +37,7 @@ const Home = async () => {
         <CompanionList
           title="recent sessions"
           classNames="w-2/3 max-lg:w-full"
-          companions={recentSessionsData?.map((session) => session.companions)}
+          companions={recentSessionsData}
         />
         <Cta />
       </section>

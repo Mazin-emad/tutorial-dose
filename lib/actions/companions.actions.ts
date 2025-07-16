@@ -3,6 +3,7 @@
 import { auth } from "@clerk/nextjs/server";
 import createSupabaseClient from "../supabase";
 import { CreateCompanion, GetAllCompanions } from "@/types";
+import { toast } from "sonner";
 
 export async function createCompanion(FormData: CreateCompanion) {
   const { userId: author } = await auth();
@@ -86,7 +87,7 @@ export const getSessionHistory = async (limit = 10) => {
     throw new Error(error?.message || "Failed to get session history");
   }
 
-  return data;
+  return data.map((session) => session.companions);
 };
 
 export const getUserSessionHistory = async (userId: string, limit = 10) => {
@@ -99,7 +100,23 @@ export const getUserSessionHistory = async (userId: string, limit = 10) => {
     .limit(limit);
 
   if (error || !data) {
-    throw new Error(error?.message || "Failed to get session history");
+    toast.error(error?.message || "Failed to get session history");
+    return [];
+  }
+
+  return data.map((session) => session.companions);
+};
+
+export const getUserCompanions = async (userId: string) => {
+  const supabase = createSupabaseClient();
+  const { data, error } = await supabase
+    .from("companions")
+    .select()
+    .eq("author", userId);
+
+  if (error || !data) {
+    toast.error(error?.message || "Failed to get user companions");
+    return [];
   }
 
   return data;
