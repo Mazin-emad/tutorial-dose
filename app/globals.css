@@ -179,7 +179,7 @@ body {
     @apply rounded-4xl border border-black px-7 pt-7 pb-10 max-lg:w-full bg-white;
   }
   .companion-limit {
-    @apply items-center justify-center flex flex-col gap-4 w-full min-2xl:w-1/2 pt-20 text-center;
+    @apply items-center justify-center flex flex-col gap-4 w-full max-md:px-10 max-lg:px-20 min-lg:w-1/2 text-center;
   }
 
   .companion-section {

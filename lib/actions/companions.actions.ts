@@ -121,3 +121,34 @@ export const getUserCompanions = async (userId: string) => {
 
   return data;
 };
+
+export const newUserPermissions = async () => {
+  const { userId, has } = await auth();
+  if (has({ plan: "pro" })) {
+    return true;
+  }
+
+  let limit = 0;
+  const supabase = createSupabaseClient();
+  const { data, error } = await supabase
+    .from("companions")
+    .select("*", { count: "exact" })
+    .eq("author", userId);
+
+  if (error || !data) {
+    toast.error(error?.message || "Failed to get user companions");
+    return false;
+  }
+
+  if (has({ plan: "basic" })) {
+    limit = 3;
+  } else {
+    limit = 10;
+  }
+
+  if (data.length >= limit) {
+    return false;
+  }
+
+  return true;
+};
