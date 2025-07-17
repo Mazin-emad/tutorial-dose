@@ -6,7 +6,6 @@ import { getSubjectColor } from "@/lib/utils";
 import { Companion, SearchParams } from "@/types";
 
 const CompanionsLibrary = async ({ searchParams }: SearchParams) => {
-  let companions: Companion[] = [];
   const filters = await searchParams;
   const topic = Array.isArray(filters.topic)
     ? filters.topic[0]
@@ -15,16 +14,16 @@ const CompanionsLibrary = async ({ searchParams }: SearchParams) => {
     ? filters.subject[0]
     : filters.subject || "";
 
-  try {
-    companions = await getCompanions({ subject, topic });
-  } catch (error) {
+  const response = await getCompanions({ subject, topic });
+  if (!response.success) {
     return (
       <div className="flex justify-center text-center text-red-500 items-center min-h-full text-2xl">
-        Error loading companions:{" "}
-        {error instanceof Error ? error.message : "Unknown error"}
+        <p>{response.message}</p>
       </div>
     );
   }
+
+  const companions: Companion[] = response.data || [];
 
   return (
     <main>

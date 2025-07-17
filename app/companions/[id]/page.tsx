@@ -17,7 +17,18 @@ const CompanionSession = async ({ params }: CompanionSessionProps) => {
     redirect("/sign-in");
   }
 
-  const companion = await getCompanionById(id);
+  const response = await getCompanionById(id);
+
+  if (!response.success) {
+    return (
+      <main className="flex flex-col items-center justify-center h-screen">
+        <h1 className="text-2xl font-bold">Error</h1>
+        <p>{response.message}</p>
+      </main>
+    );
+  }
+
+  const companion = response.data;
 
   if (!companion) {
     redirect("/companions");
