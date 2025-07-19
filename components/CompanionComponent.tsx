@@ -205,8 +205,10 @@ const CompanionComponent = ({
               return (
                 <p
                   key={index}
-                  className="max-sm:text-sm text-2xl font-bold"
-                  style={{ color: getSubjectColor(subject) }}
+                  className="max-sm:text-sm text-xl rounded-2xl"
+                  style={{
+                    backgroundColor: getSubjectColor(subject),
+                  }}
                 >
                   {name.split(" ")[0]}: {message.content}
                 </p>
