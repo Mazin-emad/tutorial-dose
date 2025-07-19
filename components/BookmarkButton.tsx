@@ -1,9 +1,11 @@
 "use client";
 import { addBookmark, removeBookmark } from "@/lib/actions/companions.actions";
+import { cn } from "@/lib/utils";
 import { useAuth } from "@clerk/nextjs";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 const BookmarkButton = ({
   companionId,
@@ -14,7 +16,7 @@ const BookmarkButton = ({
 }) => {
   const path = usePathname();
   const { userId } = useAuth();
-  console.log(userId, bookmarks);
+  const [loading, setLoading] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(
     bookmarks?.includes(userId!)
   );
@@ -23,18 +25,41 @@ const BookmarkButton = ({
     setIsBookmarked(bookmarks?.includes(userId!));
   }, [bookmarks, userId]);
 
-  const handleBookmark = () => {
+  const handleBookmark = async () => {
+    setLoading(true);
     if (isBookmarked) {
-      const {} = removeBookmark(companionId, path);
-      setIsBookmarked(false);
+      const removeRes = await removeBookmark(companionId, path);
+      if (removeRes.success) {
+        setIsBookmarked(false);
+        setLoading(false);
+        toast.success("Bookmark removed");
+      } else {
+        toast.error(removeRes.error);
+        setLoading(false);
+      }
     } else {
-      addBookmark(companionId, path);
-      setIsBookmarked(true);
+      const addRes = await addBookmark(companionId, path);
+      if (addRes.success) {
+        setIsBookmarked(true);
+        setLoading(false);
+        toast.success("Bookmark added");
+      } else {
+        toast.error(addRes.error);
+        setLoading(false);
+      }
     }
   };
 
   return (
-    <button className="p-1.5 rounded-md bg-primary" onClick={handleBookmark}>
+    <button
+      disabled={!userId || loading}
+      className={cn(
+        "p-1.5 rounded-md bg-primary cursor-pointer",
+        !userId ? "cursor-not-allowed" : "",
+        loading ? "opacity-50 cursor-progress" : ""
+      )}
+      onClick={handleBookmark}
+    >
       <Image
         src={
           isBookmarked ? "/icons/bookmark-filled.svg" : "/icons/bookmark.svg"
