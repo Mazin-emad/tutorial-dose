@@ -11,8 +11,8 @@ const bricolage = Bricolage_Grotesque({
 });
 
 export const metadata: Metadata = {
-  title: "Converso",
-  description: "Real-time AI Teaching Platform",
+  title: "Tutorial Dose",
+  description: "Real-time AI Teaching Platform, Made By Mazin Emad",
 };
 
 export default function RootLayout({
