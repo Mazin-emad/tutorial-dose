@@ -9,8 +9,12 @@ const navItems = [
     href: "/",
   },
   {
-    label: "companions",
+    label: "Companions",
     href: "/companions",
+  },
+  {
+    label: "New",
+    href: "/companions/new",
   },
   {
     label: "My Journey",
@@ -22,16 +26,14 @@ const NavItems = () => {
   const pathname = usePathname();
 
   return (
-    <div className="flex items-center gap-2 sm:gap-4">
+    <div className="flex items-center gap-2 md:gap-4">
       {navItems.map((item) => (
         <Link
           key={item.href}
           href={item.href}
           className={cn(
             "transition-colors hover:text-primary",
-            (pathname === item.href ||
-              (pathname.includes(item.href) && item.href !== "/")) &&
-              "text-primary font-semibold"
+            pathname === item.href && "text-primary font-semibold"
           )}
         >
           {item.label}
